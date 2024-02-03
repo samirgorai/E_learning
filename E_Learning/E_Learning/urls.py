@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.index,name="index"),
     path('administrator/',include("administrator.urls")),
+    path('teacher_app/',include("teacher_app.urls")),
+    path('student_app/',include("student_app.urls")),
 ]
