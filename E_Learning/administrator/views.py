@@ -1,5 +1,5 @@
-from django.shortcuts import render
-
+from django.shortcuts import render,redirect
+from django.urls import reverse
 
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.decorators import login_required
@@ -7,8 +7,11 @@ from django.contrib.auth import logout
 from administrator.forms import admintrator_login_form
 from administrator.models import Administrative_Data
 from django.contrib.auth.models import User
-
+from django.contrib.auth.models import User, Group
 # Create your views here.
+from django.contrib.auth.decorators import user_passes_test
+group_dict={"Teacher_Group":"Teacher_Group","Student_Group":"Student_Group","Administrator_Group":"Administrator_Group"}
+
 
 def admin_login(request):
     authenticated=False
@@ -36,8 +39,10 @@ def admin_login(request):
                 
                 login(request, user)
                 print("login")
-                return render(request, 'administrator/administrator_page.html', {'username': request.POST.get('username')})
-
+                #return render(request, 'administrator/administrator_page.html', {'username': request.POST.get('username')})
+                #administrator/adminstrator_page/
+                return redirect('/administrator/administrator_page/')
+                #return redirect(reverse("administrator_page"))
                 authenticated=True
             else:
                 print("login Failed")
@@ -50,5 +55,40 @@ def admin_login(request):
 
     return render(request,'administrator/admin_login.html',{"form":admintrator_login_form()})
 
+def is_administrator(user):
+    return user.groups.filter(name='Administrator_Group').exists()
+
+@user_passes_test(is_administrator)
+def admin_logout(requests):
+    pass
+
+@user_passes_test(is_administrator)
 def administrator_page(request):
     return render(request,"administrator/administrator_page.html")
+
+
+#function to add a user to a group
+@user_passes_test(is_administrator)
+def add_user_to_group(username, group_name):
+
+    #1 Retrieve the User
+    #2 Retrieve the Group
+    #3 Add User to Group
+    try:
+        user = User.objects.get(username=username)
+        group = Group.objects.get(name=group_name)
+        user.groups.add(group)
+        print(f"User '{username}' added to group '{group_name}' successfully.")
+    except User.DoesNotExist:
+        print(f"User '{username}' does not exist.")
+    except Group.DoesNotExist:
+        print(f"Group '{group_name}' does not exist.")
+
+
+@user_passes_test(is_administrator)
+def administrator_add_student(request):
+    return render(request,"administrator/add_student.html")
+
+@user_passes_test(is_administrator)
+def administrator_add_teacher(request):
+    return render(request,"administrator/add_teacher.html")

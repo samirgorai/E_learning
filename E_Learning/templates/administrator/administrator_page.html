@@ -1,12 +1,30 @@
-{% extends 'common/base.html' %}
-
-{% block body_block %}
-<div class="jumbotron">
-    <h1 >Administrator Page</h1>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <ul class="nav navbar-nav">    
+            <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:administrator_logout' %}">Administrator Logout</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:add_student' %}">Add Student</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:add_teacher' %}">Add Teacher</a></li>
+    </nav>
     <div class="container">
+        <div class="jumbotron">
+            <h1 >Administrator Page</h1>
         
+            <div class="container">
+                
+            </div>
+        
+        </div>
     </div>
 
-</div>
-{% endblock %}
+</body>
+</html>

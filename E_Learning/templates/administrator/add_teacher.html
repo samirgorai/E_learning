@@ -11,15 +11,21 @@
         <div class="container">
             <ul class="nav navbar-nav">    
             <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
-            <li><a class="navbar-brand" href="{% url 'administrator:administrator_login' %}">Administrator Login</a></li>
-            <li><a class="navbar-brand" href="{% url 'student_app:student_login' %}">Student Login</a></li>
-            <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_login' %}">Teacher Login</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:administrator_logout' %}">Administrator Logout</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:add_student' %}">Add Student</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:add_teacher' %}">Add Teacher</a></li>
     </nav>
     <div class="container">
-        {% block body_block %}
-        {% endblock %}
+        <div class="jumbotron">
+            <h1 >Administrator Page</h1>
+            <h2>Add Teacher</h2>
+        
+            <div class="container">
+                
+            </div>
+        
+        </div>
     </div>
 
 </body>
 </html>
-

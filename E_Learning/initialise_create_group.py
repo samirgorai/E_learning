@@ -57,6 +57,7 @@ def create_group():
     administrator_permissions=["Can view teacher_details","Can add teacher_details","Can delete teacher_details","Can change teacher_details",
                                "Can view student_details","Can add student_details","Can delete student_details","Can change student_details",
                                "Can view administrative_ data",
+                               "Can add user","Can change user","Can delete user","Can view user"
                                ]
     for per in administrator_permissions:
         try:
