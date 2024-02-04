@@ -12,9 +12,9 @@ def index(request):
 
 def teacher_login(request):
     authenticated=False
-
+    #checks if user is already authenticated then user is redirected to users page and not to login page
     if (request.user.is_authenticated): 
-        if(request.user.groups.filter(name='Teacher_Group').exists()):#problem here
+        if(request.user.groups.filter(name='Teacher_Group').exists()):
             return redirect('/teacher_app/adminstrator_page/')
 
 

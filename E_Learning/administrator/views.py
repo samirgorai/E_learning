@@ -1,9 +1,7 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.decorators import login_required
 from administrator.forms import admintrator_login_form
-from administrator.models import Administrative_Data
 from django.contrib.auth.models import User
 from django.contrib.auth.models import User, Group
 # Create your views here.
@@ -15,8 +13,9 @@ from django.contrib.auth.decorators import user_passes_test
 def admin_login(request):
     authenticated=False
 
+    #checks if user is already authenticated then user is redirected to users page and not to login page
     if(request.user.is_authenticated):
-        if(request.user.groups.filter(name='Administrator_Group').exists()):#problem here
+        if(request.user.groups.filter(name='Administrator_Group').exists()):
             return redirect('/administrator/administrator_page/')
 
     if(request.method=="POST"):
