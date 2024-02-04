@@ -1,7 +1,8 @@
-from django.shortcuts import render
-from django.contrib.auth import authenticate,login
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
 from teacher_app.forms import Teacher_login_form
+from django.contrib.auth.decorators import user_passes_test
 # Create your views here.
 
 def index(request):
@@ -11,6 +12,12 @@ def index(request):
 
 def teacher_login(request):
     authenticated=False
+
+    if (request.user.is_authenticated): 
+        if(request.user.groups.filter(name='Teacher_Group').exists()):#problem here
+            return redirect('/teacher_app/adminstrator_page/')
+
+
     if(request.method=="POST"):
 
         login_form=Teacher_login_form(request.POST)
@@ -28,7 +35,7 @@ def teacher_login(request):
             #print("query:",query.username,"query.password",query.password)
             #---
 
-            if user is not None:
+            if user is not None  and user.groups.filter(name='Teacher_Group').exists():
                 
                 username = login_form.cleaned_data['username']
                 user_instance=User.objects.get(username=username)
@@ -50,5 +57,18 @@ def teacher_login(request):
     return render(request,'teacher/login.html',{"form":Teacher_login_form()})
 
 
+
+
+
+def is_teacher(user):
+    return user.groups.filter(name='Teacher_Group').exists()
+
+@user_passes_test(is_teacher)
 def teacher_page(request):
-    return render(request,"teacher_app/teacher_page.html")
+    return render(request,"teacher/teacher_page.html")
+
+
+@user_passes_test(is_teacher)
+def teacher_logout(request):
+    logout(request)
+    return redirect("/")

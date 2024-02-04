@@ -1,20 +1,24 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse
-
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
 from administrator.forms import admintrator_login_form
 from administrator.models import Administrative_Data
 from django.contrib.auth.models import User
 from django.contrib.auth.models import User, Group
 # Create your views here.
 from django.contrib.auth.decorators import user_passes_test
-group_dict={"Teacher_Group":"Teacher_Group","Student_Group":"Student_Group","Administrator_Group":"Administrator_Group"}
+
+#group_dict={"Teacher_Group":"Teacher_Group","Student_Group":"Student_Group","Administrator_Group":"Administrator_Group"}
 
 
 def admin_login(request):
     authenticated=False
+
+    if(request.user.is_authenticated):
+        if(request.user.groups.filter(name='Administrator_Group').exists()):#problem here
+            return redirect('/administrator/administrator_page/')
+
     if(request.method=="POST"):
 
         login_form=admintrator_login_form(request.POST)
@@ -31,8 +35,8 @@ def admin_login(request):
             #query=Administrative_Data.objects.get(username=username)
             #print("query:",query.username,"query.password",query.password)
             #---
-
-            if user is not None:
+            print("request.user.groups.filter(name='Administrator_Group').exists():",user.groups.filter(name='Administrator_Group').exists())
+            if (user is not None and user.groups.filter(name='Administrator_Group').exists()):
                 
                 username = login_form.cleaned_data['username']
                 user_instance=User.objects.get(username=username)
@@ -59,8 +63,9 @@ def is_administrator(user):
     return user.groups.filter(name='Administrator_Group').exists()
 
 @user_passes_test(is_administrator)
-def admin_logout(requests):
-    pass
+def admin_logout(request):
+    logout(request)
+    return redirect("/")
 
 @user_passes_test(is_administrator)
 def administrator_page(request):
