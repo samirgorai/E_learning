@@ -9,6 +9,7 @@ urlpatterns = [
     path('administrator_page/',views.administrator_page,name="administrator_page"),
     path('add_student/',views.administrator_add_student,name="add_student"),
     path('add_teacher/',views.administrator_add_teacher,name="add_teacher"),
-    
+    path("administrator_upload_success/",views.file_upload_success,name="upload_success"),
+    path("administrator_upload_teacher_excel/",views.file_upload,name="upload_file"),
 ]
 

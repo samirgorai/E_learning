@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Succesfully uploaded</h1>
+    <h1>Username Created</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>first_name</th>
+                <th>last_name</th>
+                <th>DOB</th>
+                <th>SEX</th>
+                <th>email</th>
+                <th>mobile</th>
+                <th>username</th>
+                <th>password</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dict_df_user_created %}
+            <tr>
+                <td>{{ item.teacher_first_name }}</td>
+                <td>{{ item.teacher_last_name }}</td>
+                <td>{{ item.teacher_dob }}</td>
+                <td>{{ item.teacher_sex }}</td>
+                <td>{{ item.teacher_email }}</td>
+                <td>{{ item.teacher_mobile }}</td>
+                <td>{{ item.username }}</td>
+                <td>{{ item.password }}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>NOT Created</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>first_name</th>
+                <th>last_name</th>
+                <th>DOB</th>
+                <th>SEX</th>
+                <th>email</th>
+                <th>mobile</th>
+
+               
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dict_df_user_not_created %}
+            <tr>
+                <td>{{ item.teacher_first_name }}</td>
+                <td>{{ item.teacher_last_name }}</td>
+                <td>{{ item.teacher_dob }}</td>
+                <td>{{ item.teacher_sex }}</td>
+                <td>{{ item.teacher_email}}</td>
+                <td>{{ item.teacher_mobile }}</td>
+
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
