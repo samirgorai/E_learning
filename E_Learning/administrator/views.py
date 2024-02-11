@@ -179,15 +179,22 @@ def file_upload(request):
                 #password=make_random_password(size=8)
                 alphabet = string.ascii_letters + string.digits
                 password=''.join(secrets.choice(alphabet) for i in range(8))
+                print("type(password)",type(password),"password:",password)
                 user_data={
                     "username":username_new,
                     "password":password,
                 }
 
+
+                print("User.objects.filter(username=username_new)",User.objects.filter(username="username_new"))
                 df.at[index,"username"]=username_new
                 df.at[index,"password"]=password
 
-                user=User.objects.create(**user_data)
+                
+                user=User.objects.create(username=user_data["username"])
+                user.set_password(user_data["password"])
+                user.save()
+                
                 print("line191")
                 data={
                     "user":user,

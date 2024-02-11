@@ -15,4 +15,3 @@ class Teacher_details(models.Model):
     def __str__(self) -> str:
         return self.teacher_first_name
     
-    
