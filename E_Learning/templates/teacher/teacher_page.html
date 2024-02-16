@@ -10,9 +10,13 @@
 <body>
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
-            <ul class="nav navbar-nav">    
+            <ul class="nav navbar-nav">
             <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
-            <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_logout' %}">Teacher_Logout</a></li>
+            <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_page' %}">Teacher Page</a></li>
+            <li><p class="navbar-brand" >Welcome {{ user.username }}!</p></li>
+            <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_logout' %}">Logout</a></li>
+            </ul>
+        </div>
     </nav>
     <div class="container">
         <div class="jumbotron">

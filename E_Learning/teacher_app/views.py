@@ -5,8 +5,8 @@ from teacher_app.forms import Teacher_login_form
 from django.contrib.auth.decorators import user_passes_test
 # Create your views here.
 
-def index(request):
-    return render(request,"common/index.html")
+"""def index(request):
+    return render(request,"common/index.html")"""
 
 
 

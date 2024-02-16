@@ -11,7 +11,7 @@ def index(request):
     return render(request,"common/index.html")
 
 
-# student login 
+# student login
 def student_login(request):
     authenticated=False
 

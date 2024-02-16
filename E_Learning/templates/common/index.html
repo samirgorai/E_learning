@@ -1,12 +1,93 @@
-{% extends 'common/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+    {% if user.groups.all %}
+    {% for group in user.groups.all %}
+        {% if group.name == 'Student_Group' %}
 
-{% block body_block %}
-<div class="jumbotron">
-    <h1 >Welcome To E Learning </h1>
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container">
+                <ul class="nav navbar-nav">       
+                <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
+                <li><a class="navbar-brand" href="{% url 'student_app:student_page' %}">Student Page</a></li>
+                <li><p class="navbar-brand">Welcome, {{ user.username }}!</p></li>
+                <li><a class="navbar-brand" href="{% url 'student_app:student_logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
 
-    <div class="container">
+        <div class="jumbotron">        
+            <div class="container">
+                <p>Welcome {{ user.username }}!</p>
+            </div>
         
+        </div>
     </div>
+        
 
-</div>
-{% endblock %}
+        {% elif group.name == 'Teacher_Group' %}
+            <!-- Render elements for users in the 'Teacher_Group' group --> 
+            <nav class="navbar navbar-default navbar-static-top">
+                <div class="container">
+                    <ul class="nav navbar-nav">
+                    <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
+                    <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_page' %}">Teacher Page</a></li>
+                    <li><p class="navbar-brand" >Welcome {{ user.username }}!</p></li>
+                    <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_logout' %}">Logout</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="jumbotron">
+                <div class="container">
+                    <p>Welcome, {{ user.username }}!</p>    
+                </div>
+            
+            </div>
+
+
+
+        {% elif group.name == 'Administrator_Group' %}
+            <!-- Render elements for users in the 'Administrator_Group' group -->
+
+            <nav class="navbar navbar-default navbar-static-top">
+                <div class="container">
+                    <ul class="nav navbar-nav">    
+                    <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
+                    <li><a class="navbar-brand" href="{% url 'administrator:administrator_page' %}">Admin Page</a></li>
+                    <li><a class="navbar-brand" href="{% url 'administrator:add_student' %}">Add Student</a></li>
+                    <li><a class="navbar-brand" href="{% url 'administrator:add_teacher' %}">Add Teacher</a></li>
+                    <li><p class="navbar-brand" >Welcome {{ user.username }}!</p></li>
+                    <li><a class="navbar-brand" href="{% url 'administrator:administrator_logout' %}">Logout</a></li>        
+                    </ul>
+                </div>
+            </nav>
+            <div class="container">
+                <div class="jumbotron">
+                
+                    <p>Welcome, {{ user.username }}!</p>
+                </div>
+            </div>
+        {% endif %}    
+    {% endfor %}
+{% else %}
+    <!-- Render elements for users who are not in any group -->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <ul class="nav navbar-nav">    
+            <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:administrator_login' %}">Administrator Login</a></li>
+            <li><a class="navbar-brand" href="{% url 'student_app:student_login' %}">Student Login</a></li>
+            <li><a class="navbar-brand" href="{% url 'teacher_app:teacher_login' %}">Teacher Login</a></li>
+            </ul>
+        </div>
+    </nav>
+{% endif %}
+</body>
+</html>

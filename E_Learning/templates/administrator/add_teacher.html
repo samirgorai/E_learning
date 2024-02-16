@@ -11,14 +11,17 @@
         <div class="container">
             <ul class="nav navbar-nav">    
             <li><a class="navbar-brand" href="{% url 'index' %}">HOME</a></li>
-            <li><a class="navbar-brand" href="{% url 'administrator:administrator_logout' %}">Administrator Logout</a></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:administrator_page' %}">Admin Page</a></li>
             <li><a class="navbar-brand" href="{% url 'administrator:add_student' %}">Add Student</a></li>
             <li><a class="navbar-brand" href="{% url 'administrator:add_teacher' %}">Add Teacher</a></li>
+            <li><p class="navbar-brand" >Welcome {{ user.username }}!</p></li>
+            <li><a class="navbar-brand" href="{% url 'administrator:administrator_logout' %}">Logout</a></li>        
+            </ul>
+        </div>
     </nav>
     <div class="container">
         <div class="jumbotron">
-            <h1 >Administrator Page</h1>
-            <h2>Add Teacher</h2>
+            <h1 >Add teacher</h1>
         
             <div class="container">
                 
@@ -26,6 +29,71 @@
         
         </div>
     </div>
+
+    <div class="container">
+        <div class="jumbotron">
+            <h1 style="color: blue;" >Upload Excel File</h1>
+            <form id="uploadForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="file" id="fileInput" name="fileInput" accept=".xls, .xlsx">
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var formData = new FormData();
+            var fileInput = document.getElementById('fileInput').files[0];
+            formData.append('file', fileInput);
+            
+            var csrftoken = getCookie('csrftoken');
+            fetch("/administrator/administrator_upload_teacher_excel/", {
+                method: 'POST',
+                headers: {
+                      'X-CSRFToken': csrftoken // Include the CSRF token in the request headers
+                        },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href="/administrator/administrator_upload_success_teacher/"
+                    // File uploaded successfully
+                } else {
+                    var errorMessage = document.createElement('div');
+                    errorMessage.textContent = 'File upload failed. Please try again.';
+                    errorMessage.style.color = 'red';
+                    document.getElementById('uploadForm').appendChild(errorMessage);
+            
+                    // Handle error
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+    </script>
 
 </body>
 </html>

@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import user_passes_test
 #from django.contrib.auth import make_random_password
 from django.http import JsonResponse
 from teacher_app.models import Teacher_details
+from student_app.models import Student_details
 from E_Learning.settings import BASE_DIR
 import secrets
 import string
@@ -19,6 +20,8 @@ from pathlib import Path
 
 #group_dict={"Teacher_Group":"Teacher_Group","Student_Group":"Student_Group","Administrator_Group":"Administrator_Group"}
 df=""
+df_student=""
+
 
 def admin_login(request):
     authenticated=False
@@ -108,7 +111,7 @@ def administrator_add_teacher(request):
     return render(request,"administrator/add_teacher.html")
 
 @user_passes_test(is_administrator)
-def file_upload_success(request):
+def file_upload_success_teacher(request):
     #display the excel content in a tabular form
     global df
     df_user_created=df[df['user_created']==True]
@@ -132,7 +135,7 @@ def file_upload_success(request):
     return render(request,"administrator/upload_success.html",{"dict_df_user_created":dict_df_user_created,"dict_df_user_not_created":dict_df_user_not_created})
 
 @user_passes_test(is_administrator)
-def file_upload(request):
+def excel_file_upload_teacher(request):
     global df
     if request.method=="POST" and request.FILES['file']:
         upload_file=request.FILES['file']
@@ -219,3 +222,111 @@ def file_upload(request):
             print(e)
             df=""
             return JsonResponse({'error': 'No file was uploaded'}, status=400)
+        
+
+
+@user_passes_test(is_administrator)
+def  excel_file_upload_student(request):
+    global df_student 
+
+    if request.method=="POST" and request.FILES['file']:
+        upload_file=request.FILES['file']
+        
+        try:
+            
+            print("line 237")
+            #first try to save the data
+            file_path='media/administrator/' + upload_file.name
+            with open('media/administrator/' + upload_file.name, 'wb+') as destination:
+                for chunk in upload_file.chunks():
+                    destination.write(chunk)
+            print(file_path)
+
+            
+            #read the data from file
+            #print(type(df_student))
+            
+            #abs_file_path=BASE_DIR+file_path
+            abs_file_path=Path.joinpath(BASE_DIR,file_path)
+            print(abs_file_path)
+            #df=pd.read_excel(upload_file,sheet_name="Sheet1")
+            df_student=pd.read_excel(abs_file_path)
+            print("debug")
+
+            df_student['user_created'] = False
+            df_student['username']=np.nan
+            df_student["password"]=np.nan
+            
+            for index,row in df_student.iterrows():
+                #create username from first and last name
+                #check if the username already exixts in users list if already present add a no at the end
+                username=row["student_first_name"]+row["student_last_name"]
+                username_new=username
+                num=0
+                while(True):
+                        
+                    if(User.objects.filter(username=username_new).count()>0):
+                        username_new=username+str(num)
+                        num+=1
+                    else:
+                        break
+                print("username_new",username_new)
+                #password=make_random_password(size=8)
+                alphabet = string.ascii_letters + string.digits
+                password=''.join(secrets.choice(alphabet) for i in range(8))
+                print("type(password)",type(password),"password:",password)
+                user_data={
+                    "username":username_new,
+                    "password":password,
+                }
+
+
+                print("User.objects.filter(username=username_new)",User.objects.filter(username="username_new"))
+                df_student.at[index,"username"]=username_new
+                df_student.at[index,"password"]=password
+
+                
+                user=User.objects.create(username=user_data["username"])
+                user.set_password(user_data["password"])
+                user.save()
+                
+                print("line293")
+                data={
+                    "user":user,
+                    "student_first_name":row["student_first_name"],
+                    "student_last_name":row["student_last_name"],
+                    "student_dob":row["student_dob"],
+                    "student_sex":row["student_sex"],
+                    "student_email":row["student_email"],
+                    "student_mobile":row["student_mobile"]      
+                      }
+                print("line 303")
+                
+                Student_details.objects.create(**data)
+                df_student["user_created"]=True
+                group = Group.objects.get(name='Student_Group')
+                group.user_set.add(user)
+                #user.groups.add(name=group)
+                print("df_student.head()",df_student.head())
+            return JsonResponse({'message': 'File uploaded successfully'}, status=200)
+
+        except Exception as e:
+            print(e)
+            df_student=""
+            return JsonResponse({'error': 'No file was uploaded'}, status=400)
+    
+
+
+
+@user_passes_test(is_administrator)
+def file_upload_success_student(request):
+    #display the excel content in a tabular form
+    global df_student
+    df_user_created=df_student[df_student['user_created']==True]
+    df_user_not_created=df_student[df_student['user_created']==False]
+
+    dict_df_user_created=df_user_created.to_dict(orient='records')
+    dict_df_user_not_created=df_user_not_created.to_dict(orient='records')
+          
+    
+    return render(request,"administrator/upload_student_success.html",{"dict_df_user_created":dict_df_user_created,"dict_df_user_not_created":dict_df_user_not_created})
